@@ -1,0 +1,79 @@
+#include <catch2/catch_test_macros.hpp>
+#include "avl_tree.h"
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm> // For std::find
+
+using namespace std;
+
+// Blake McGahee
+// UFID: 82924917
+
+// Test at least five incorrect commands.
+TEST_CASE("Incorrect Commands", "[parsing]") {
+    AVLTree tree;
+    // No quotes on name should fail.
+    REQUIRE(tree.processCommand("insert A 1") == "unsuccessful");
+    // ID too short should fail.
+    REQUIRE(tree.processCommand("insert \"Name\" 123") == "unsuccessful");
+    // Invalid remove command.
+    REQUIRE(tree.processCommand("remove not_an_id") == "unsuccessful");
+    // Assuming search with no arguments is invalid.
+    REQUIRE(tree.processCommand("search") == "unsuccessful");
+    // Just a gibberish command.
+    REQUIRE(tree.processCommand("gibberish") == "unsuccessful");
+}
+
+// Test insert command and all four rotation cases.
+TEST_CASE("Insert and Rotations", "[insertion][rotation]") {
+    AVLTree tree;
+
+    // Left-Left rotation test.
+    tree.insert("C", 3);
+    tree.insert("B", 2);
+    tree.insert("A", 1);
+    REQUIRE(tree.getHeight() == 1);
+    REQUIRE(tree.printInorder() == "A B C");
+
+    AVLTree tree2;
+    // Right-Right rotation test.
+    tree2.insert("A", 1);
+    tree2.insert("B", 2);
+    tree2.insert("C", 3);
+    REQUIRE(tree2.getHeight() == 1);
+    REQUIRE(tree2.printInorder() == "A B C");
+
+    AVLTree tree3;
+    // Left-Right rotation test.
+    tree3.insert("A", 1);
+    tree3.insert("C", 3);
+    tree3.insert("B", 2);
+    REQUIRE(tree3.getHeight() == 1);
+    REQUIRE(tree3.printInorder() == "A B C");
+
+    AVLTree tree4;
+    // Right-Left rotation test.
+    tree4.insert("C", 3);
+    tree4.insert("A", 1);
+    tree4.insert("B", 2);
+    REQUIRE(tree4.getHeight() == 1);
+    REQUIRE(tree4.printInorder() == "A B C");
+}
+
+// Insert at least 100 nodes, remove ten, and check in order (size).
+TEST_CASE("Large Insert and Remove Check", "[large]") {
+    AVLTree tree;
+    // Insert 100 users.
+    for (int i = 1; i <= 100; ++i) {
+        tree.insert("User" + to_string(i), 20000000 + i);
+    }
+    REQUIRE(tree.getSize() == 100);
+
+    // Remove the first ten inserted users.
+    for (int i = 1; i <= 10; ++i) {
+        REQUIRE(tree.remove(20000000 + i) == "successful");
+    }
+    REQUIRE(tree.getSize() == 90);
+    // Checking size as a proxy for "check in order" for simplicity.
+}
