@@ -1,0 +1,10 @@
+blakemcgahee
+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
+
+
+
+git push origin main
+
+
+
+git commit -m "Implemented main application UI, robust input validation, and enhanced search result display. Integrated data loading/generation, Jump Search, and added 'findClosestValues' for improved user feedback. Finalized search execution timing and output formatting."
